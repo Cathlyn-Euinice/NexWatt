@@ -2436,3 +2436,205 @@ body.dark-theme {
   from { opacity: 0; transform: scale(0.96); }
   to { opacity: 1; transform: scale(1); }
 }
+
+
+/* ==========================================================================
+   MOBILE RESPONSIVE DIMENSION & TOUCH OPTIMIZATION (iPhone & Android)
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Page Padding & Dimensions */
+  .page-body {
+    padding: 14px 12px 50px !important;
+  }
+  .dash-hero {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 14px !important;
+  }
+  .hero-left h1 {
+    font-size: 1.45rem !important;
+    line-height: 1.25 !important;
+  }
+  .hero-sub {
+    font-size: 0.82rem !important;
+  }
+
+  /* Navigation Bar Mobile Layout */
+  .nav-container {
+    padding: 8px 12px !important;
+    gap: 8px !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+  .brand-logo {
+    order: 1 !important;
+  }
+  .nav-actions {
+    order: 2 !important;
+    gap: 6px !important;
+  }
+  .user-chip {
+    padding: 3px 8px 3px 4px !important;
+  }
+  .user-name {
+    font-size: 0.72rem !important;
+  }
+  .user-pts {
+    font-size: 0.65rem !important;
+  }
+  .btn-demo-reset {
+    padding: 5px 8px !important;
+    font-size: 0.75rem !important;
+  }
+  .main-nav {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+  }
+  .nav-links {
+    order: 3 !important;
+    display: flex !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    padding: 4px 0 6px !important;
+    gap: 6px !important;
+    width: 100% !important;
+  }
+    gap: 6px !important;
+    width: 100% !important;
+  }
+  .nav-links::-webkit-scrollbar {
+    display: none !important;
+  }
+  .nav-item {
+    padding: 6px 11px !important;
+    font-size: 0.78rem !important;
+    flex-shrink: 0 !important;
+    border-radius: 20px !important;
+  }
+
+  /* 2x2 KPI Metric Cards on Mobile */
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    margin-bottom: 18px !important;
+  }
+  .kpi-card {
+    padding: 12px !important;
+    border-radius: 12px !important;
+  }
+  .kpi-icon-wrap {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 0.95rem !important;
+  }
+  .kpi-badge {
+    font-size: 0.65rem !important;
+    padding: 2px 6px !important;
+  }
+  .kpi-value {
+    font-size: 1.25rem !important;
+    margin: 4px 0 !important;
+  }
+  .kpi-label {
+    font-size: 0.68rem !important;
+  }
+
+  /* Charts & Visualizers */
+  .chart-card, .quick-habits-card, .card-box {
+    padding: 15px !important;
+    border-radius: 14px !important;
+    margin-bottom: 16px !important;
+  }
+  .chart-container-box {
+    height: 210px !important;
+    min-height: 210px !important;
+  }
+
+  /* Mystery Room Mobile Dimension */
+  .mystery-game-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .room-canvas {
+    min-height: 330px !important;
+    height: 330px !important;
+    border-radius: 12px !important;
+  }
+  .waster-pin {
+    width: 36px !important;
+    height: 36px !important;
+  }
+  .pin-icon {
+    font-size: 1.1rem !important;
+  }
+  .pin-tag-text {
+    font-size: 0.62rem !important;
+  }
+
+  /* Garden Canvas Mobile Dimension */
+  .garden-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .garden-canvas-box {
+    min-height: 270px !important;
+    height: 270px !important;
+  }
+  .garden-svg-art {
+    max-height: 240px !important;
+  }
+
+  /* Form & Interactive Elements */
+  .form-row-2, .calculator-grid, .simulator-grid, .pact-grid, .comparison-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .form-input, .form-select, select, input[type="text"], input[type="number"] {
+    min-height: 44px !important;
+    font-size: 0.95rem !important;
+  }
+  .range-slider {
+    height: 36px !important;
+  }
+  .btn-primary-action, .btn-secondary-action {
+    min-height: 44px !important;
+    font-size: 0.92rem !important;
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* Top Hackathon Bar */
+  .top-hackathon-bar {
+    padding: 5px 10px !important;
+    font-size: 0.72rem !important;
+  }
+  .hackathon-right {
+    display: none !important;
+  }
+
+  /* Footer */
+  .footer-inner {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+  .footer-right {
+    width: 100% !important;
+    justify-content: space-between !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-left h1 {
+    font-size: 1.3rem !important;
+  }
+  .kpi-value {
+    font-size: 1.1rem !important;
+  }
+  .room-canvas {
+    min-height: 300px !important;
+    height: 300px !important;
+  }
+}
