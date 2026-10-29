@@ -460,6 +460,13 @@ def api_reset_demo():
     return jsonify({"success": True, "message": "Demo data restored to pristine state!"})
 
 
+# Backward-compatible endpoints to avoid stale browser 404s
+@app.route("/api/iot/latest", methods=["GET"])
+@app.route("/api/iot/ingest", methods=["POST"])
+def api_iot_fallback():
+    return jsonify({"status": "ok", "mode": "software-simulation"})
+
+
 # ---------------------------------------------------------------------------
 # Local Server Execution
 # ---------------------------------------------------------------------------
