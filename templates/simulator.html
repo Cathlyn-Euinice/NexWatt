@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block title %}Bill Simulator | NexWatt{% endblock %}
+
+{% block content %}
+<div class="content-container">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header-box">
+    <div class="ph-tag">DEMAND-SIDE LOAD OPTIMIZATION</div>
+    <h1 class="ph-title">Hostel & Household Bill Simulator</h1>
+    <p class="ph-subtitle">
+      Adjust the daily runtime sliders below to simulate how shifting everyday student habits drops your monthly electricity bill. See the dramatic non-linear bill savings when you stay below the higher Tamil Nadu tariff slabs!
+    </p>
+  </div>
+
+  <div class="sim-layout-grid">
+
+    <!-- LEFT: APPLIANCE RUNTIME SLIDERS -->
+    <div class="sim-sliders-card">
+      <div class="card-header-row">
+        <div>
+          <h2 class="card-title">🎛️ Daily Appliance Runtime Controls</h2>
+          <p class="card-sub">Drag sliders to test 'Before' (wasteful habit) vs 'After' (optimized habit).</p>
+        </div>
+      </div>
+
+      <!-- SLIDER ITEM 1: AIR CONDITIONER -->
+      <div class="sim-appliance-item">
+        <div class="sai-header">
+          <div class="sai-name-col">
+            <span class="sai-icon">❄️</span>
+            <div>
+              <strong>Hostel Split AC (1.5 Ton)</strong>
+              <span class="sai-meta">1,500W at 18°C &bull; 950W at 24°C</span>
+            </div>
+          </div>
+          <span class="sai-stat" id="acSavingDisplay">Saves ~144 kWh/mo</span>
+        </div>
+
+        <div class="sai-sliders-row">
+          <div class="sai-slider-box">
+            <div class="ssb-label"><span>Before (Wasteful):</span> <strong id="lblAcBefore">8.0 hrs/day</strong></div>
+            <input type="range" id="slAcBefore" min="0" max="16" step="0.5" value="8" class="range-slider before-slider" oninput="updateSimCalculations()">
+          </div>
+          <div class="sai-slider-box">
+            <div class="ssb-label"><span>After (Optimized):</span> <strong id="lblAcAfter">4.0 hrs/day</strong></div>
+            <input type="range" id="slAcAfter" min="0" max="16" step="0.5" value="4" class="range-slider after-slider" oninput="updateSimCalculations()">
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDER ITEM 2: CEILING FANS -->
+      <div class="sim-appliance-item">
+        <div class="sai-header">
+          <div class="sai-name-col">
+            <span class="sai-icon">🌀</span>
+            <div>
+              <strong>Hostel Ceiling Fans (2 Units)</strong>
+              <span class="sai-meta">75W each (Standard Induction Fan)</span>
+            </div>
+          </div>
+          <span class="sai-stat" id="fanSavingDisplay">Saves ~36 kWh/mo</span>
+        </div>
+
+        <div class="sai-sliders-row">
+          <div class="sai-slider-box">
+            <div class="ssb-label"><span>Before (Leaving ON):</span> <strong id="lblFanBefore">18.0 hrs/day</strong></div>
+            <input type="range" id="slFanBefore" min="0" max="24" step="1" value="18" class="range-slider before-slider" oninput="updateSimCalculations()">
+          </div>
+          <div class="sai-slider-box">
+            <div class="ssb-label"><span>After (Turned off on exit):</span> <strong id="lblFanAfter">10.0 hrs/day</strong></div>
+            <input type="range" id="slFanAfter" min="0" max="24" step="1" value="10" class="range-slider after-slider" oninput="updateSimCalculations()">
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDER ITEM 3: TUBE LIGHTS -->
+      <div class="sim-appliance-item">
+        <div class="sai-header">
+          <div class="sai-name-col">
+            <span class="sai-icon">💡</span>
+            <div>
+              <strong>Room Tube Lights (2 Units)</strong>
+              <span class="sai-meta">40W Fluorescent Fixtures</span>
+            </div>
+          </div>
+          <span class="sai-stat" id="lightSavingDisplay">Saves ~12 kWh/mo</span>
+        </div>
+
+        <div class="sai-sliders-row">
+          <div class="sai-slider-box">
+            <div class="ssb-label"><span>Before (Daytime ON):</span> <strong id="lblLightBefore">10.0 hrs/day</strong></div>
+            <input type="range" id="slLightBefore" min="0" max="16" step="1" value="10" class="range-slider before-slider" oninput="updateSimCalculations()">
+          </div>
+          <div class="sai-slider-box">
+            <div class="ssb-label"><span>After (Using Daylight):</span> <strong id="lblLightAfter">5.0 hrs/day</strong></div>
+            <input type="range" id="slLightAfter" min="0" max="16" step="1" value="5" class="range-slider after-slider" oninput="updateSimCalculations()">
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDER ITEM 4: GAMING PC & MONITOR -->
+      <div class="sim-appliance-item">
+        <div class="sai-header">
+          <div class="sai-name-col">
+            <span class="sai-icon">🖥️</span>
+            <div>
+              <strong>Desktop PC & Monitor</strong>
+              <span class="sai-meta">180W Active &bull; 35W Sleep Draw</span>
+            </div>
+          </div>
+          <span class="sai-stat" id="pcSavingDisplay">Saves ~27 kWh/mo</span>
+        </div>
+
+        <div class="sai-sliders-row">
+          <div class="sai-slider-box">
+            <div class="ssb-label"><span>Before (Left on overnight):</span> <strong id="lblPcBefore">12.0 hrs/day</strong></div>
+            <input type="range" id="slPcBefore" min="0" max="24" step="1" value="12" class="range-slider before-slider" oninput="updateSimCalculations()">
+          </div>
+          <div class="sai-slider-box">
+            <div class="ssb-label"><span>After (Full shutdown):</span> <strong id="lblPcAfter">7.0 hrs/day</strong></div>
+            <input type="range" id="slPcAfter" min="0" max="24" step="1" value="7" class="range-slider after-slider" oninput="updateSimCalculations()">
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDER ITEM 5: WATER HEATER / IMMERSION GEYSER -->
+      <div class="sim-appliance-item">
+        <div class="sai-header">
+          <div class="sai-name-col">
+            <span class="sai-icon">🚿</span>
+            <div>
+              <strong>Immersion Water Heater / Geyser</strong>
+              <span class="sai-meta">1,500W High-Draw Heating Element</span>
+            </div>
+          </div>
+          <span class="sai-stat" id="geyserSavingDisplay">Saves ~22.5 kWh/mo</span>
+        </div>
+
+        <div class="sai-sliders-row">
+          <div class="sai-slider-box">
+            <div class="ssb-label"><span>Before (Boiling 40 mins):</span> <strong id="lblGeyserBefore">1.0 hrs/day</strong></div>
+            <input type="range" id="slGeyserBefore" min="0" max="3" step="0.25" value="1" class="range-slider before-slider" oninput="updateSimCalculations()">
+          </div>
+          <div class="sai-slider-box">
+            <div class="ssb-label"><span>After (8-min bucket warming):</span> <strong id="lblGeyserAfter">0.5 hrs/day</strong></div>
+            <input type="range" id="slGeyserAfter" min="0" max="3" step="0.25" value="0.5" class="range-slider after-slider" oninput="updateSimCalculations()">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: SIMULATION BILL COMPARISON OUTPUT -->
+    <div class="sim-output-col">
+
+      <!-- MAIN BEFORE VS AFTER BILL CARD -->
+      <div class="sim-results-card">
+        <h2 class="card-title">📊 Projected Monthly Bill Outcome</h2>
+        <p class="card-sub">Calculated via Tamil Nadu TANGEDCO progressive slab rates.</p>
+
+        <!-- Big Before vs After Visual Comparison -->
+        <div class="bill-vs-container">
+          <div class="bvc-box before-box">
+            <span class="bvc-head">BEFORE HABIT SHIFT</span>
+            <span class="bvc-kwh" id="simKwhBefore">492.0 kWh</span>
+            <div class="bvc-price inr-danger" id="simBillBefore">₹1,777.00</div>
+            <span class="bvc-sub">Monthly Electricity Bill</span>
+          </div>
+
+          <div class="bvc-arrow">
+            <span>&rarr;</span>
+            <small>SAVINGS</small>
+          </div>
+
+          <div class="bvc-box after-box">
+            <span class="bvc-head">AFTER NEXWATT HABITS</span>
+            <span class="bvc-kwh" id="simKwhAfter">250.5 kWh</span>
+            <div class="bvc-price inr-color" id="simBillAfter">₹452.25</div>
+            <span class="bvc-sub">Monthly Electricity Bill</span>
+          </div>
+        </div>
+
+        <!-- HIGHLIGHT: NET SAVINGS IN RUPEES -->
+        <div class="sim-net-savings-banner">
+          <div class="sns-left">
+            <span class="sns-label">MONTHLY MONEY SAVED</span>
+            <span class="sns-inr" id="simInrSaved">₹1,324.75 / month</span>
+          </div>
+          <div class="sns-right">
+            <span class="sns-kwh-drop" id="simKwhSaved">-241.5 kWh (-49%)</span>
+          </div>
+        </div>
+
+        <!-- ANNUAL PROJECTION & CARBON ABATED -->
+        <div class="sim-annual-projection">
+          <div class="sap-row">
+            <span>Annual Campus Room Savings:</span>
+            <strong class="inr-color" id="simAnnualInr">₹15,897.00 / year</strong>
+          </div>
+          <div class="sap-row">
+            <span>Annual CO₂ Emissions Eliminated:</span>
+            <strong id="simAnnualCo2">2,173.5 kg CO₂/yr</strong>
+          </div>
+          <div class="sap-row">
+            <span>Equivalent Forest Trees Required:</span>
+            <strong id="simAnnualTrees">100 Mature Trees</strong>
+          </div>
+        </div>
+
+        <!-- PROGRESSIVE SLAB BENEFIT EXPLANATION -->
+        <div class="sim-slab-explainer">
+          <h4>💡 The Tamil Nadu "Slab Leap" Effect:</h4>
+          <p>
+            When your room cut from <strong>492 units</strong> down to <strong>250 units</strong>, you completely escaped the expensive ₹6.00 and ₹4.50 high-consumption tiers. In Tamil Nadu, saving just 50 units near a tier edge can slash your bill by up to <strong>35%</strong>!
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/simulator.js') }}"></script>
+{% endblock %}

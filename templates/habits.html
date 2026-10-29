@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Daily Habit Check-in | NexWatt{% endblock %}
+
+{% block content %}
+<div class="content-container">
+
+  <!-- PAGE HEADER WITH STREAK & ANTI-CHEAT CAP METER -->
+  <div class="habits-hero-bar">
+    <div class="hh-left">
+      <div class="ph-tag">HONEST CHECK-IN PROTOCOL</div>
+      <h1 class="ph-title">Daily Energy-Saving Action Checklist</h1>
+      <p class="ph-subtitle">
+        Check off the power-saving actions you practiced today in your hostel room or home. Honest daily micro-habits compound into massive campus kilowatt reductions!
+      </p>
+    </div>
+
+    <!-- STREAK & DAILY CAP WIDGETS -->
+    <div class="hh-widgets">
+      <!-- Streak Box -->
+      <div class="hh-streak-box">
+        <span class="hh-flame">🔥</span>
+        <div>
+          <div class="hh-streak-val">{{ user.streak_days }} Days</div>
+          <div class="hh-streak-lbl">Active Streak</div>
+        </div>
+      </div>
+
+      <!-- Anti-Cheat Daily Cap Box -->
+      <div class="hh-cap-box">
+        <div class="cap-head">
+          <span class="cap-title">🛡️ Anti-Cheat Daily Points Cap</span>
+          <span class="cap-ratio" id="capDisplay">{{ user.today_points }} / {{ daily_cap }} pts</span>
+        </div>
+        <div class="cap-bar-track">
+          <div class="cap-bar-fill" id="capBarFill" style="width: {{ (user.today_points / daily_cap * 100)|int }}%;"></div>
+        </div>
+        <span class="cap-hint">Daily maximum prevents spamming to game the hostel league.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKLIST CARDS GRID -->
+  <div class="habits-full-grid">
+    {% for h in habits %}
+    <div class="habit-interactive-card {% if h.completed_today %}is-checked{% endif %}" id="card-{{ h.id }}" data-id="{{ h.id }}">
+      <div class="hic-checkbox-wrap" onclick="toggleHabitAjax('{{ h.id }}')">
+        <div class="custom-checkbox">
+          <span class="check-icon">✓</span>
+        </div>
+      </div>
+
+      <div class="hic-body" onclick="toggleHabitAjax('{{ h.id }}')">
+        <div class="hic-scenario-pill">{{ h.scenario }}</div>
+        <h3 class="hic-title">{{ h.title }}</h3>
+        
+        <div class="hic-metrics-row">
+          <span class="hic-badge kwh-badge">⚡ Saves ~{{ h.kwh }} kWh</span>
+          <span class="hic-badge pts-badge">⭐ +{{ h.points }} Points</span>
+          <span class="hic-badge inr-badge">💰 ~₹{{ (h.kwh * 6.5)|round(2) }} saved</span>
+        </div>
+
+        {% if h.vouch_count > 0 %}
+        <div class="hic-vouch-pill">
+          <span>👍 Vouched by <strong>{{ h.last_vouched_by | join(', ') }}</strong> (Room 302, 305)</span>
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="hic-action">
+        <button class="btn-check-toggle" onclick="toggleHabitAjax('{{ h.id }}')">
+          {% if h.completed_today %}Done ✅{% else %}Mark Done{% endif %}
+        </button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- ANTI-CHEAT EXPLANATION (FOR HACKATHON JUDGES) -->
+  <div class="anti-cheat-card">
+    <div class="acc-header">
+      <span class="acc-icon">⚖️</span>
+      <div>
+        <h3>Fair-Play Anti-Cheat Architecture (Judge Explanation)</h3>
+        <p>Judges often ask: <em>"What if a student just clicks all the checkboxes without actually turning off their fan?"</em></p>
+      </div>
+    </div>
+    <div class="acc-grid">
+      <div class="acc-col">
+        <strong>1. Daily Points Cap (100 Pts):</strong>
+        <p>A single user cannot inflate their score in one day. Consistent 7-day behavior is rewarded over one-time spamming.</p>
+      </div>
+      <div class="acc-col">
+        <strong>2. Peer Vouching (Power Pact):</strong>
+        <p>Roommates in the same hostel wing confirm each other's check-ins, adding social accountability and peer verification.</p>
+      </div>
+      <div class="acc-col">
+        <strong>3. Streak Degradation:</strong>
+        <p>Skipping days resets your streak, keeping the psychological motivation tied to genuine daily habit formation.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const dailyCapMax = {{ daily_cap }};
+</script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endblock %}

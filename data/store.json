@@ -1,0 +1,406 @@
+{
+  "user": {
+    "name": "Arun Kumar",
+    "room": "Room 304, Block A",
+    "hostel": "Nelson Mandela Hostel - Sathyabama",
+    "points": 345,
+    "streak_days": 5,
+    "last_checkin_date": "2026-10-29",
+    "today_points": 35,
+    "total_kwh_saved": 52.4,
+    "total_inr_saved": 393.0,
+    "co2_avoided_kg": 39.3,
+    "current_team_id": "team_block_a"
+  },
+  "seven_day_history": [
+    {
+      "day": "Mon",
+      "kwh": 6.2,
+      "inr": 46.5,
+      "points": 45
+    },
+    {
+      "day": "Tue",
+      "kwh": 7.8,
+      "inr": 58.5,
+      "points": 55
+    },
+    {
+      "day": "Wed",
+      "kwh": 8.1,
+      "inr": 60.75,
+      "points": 60
+    },
+    {
+      "day": "Thu",
+      "kwh": 6.9,
+      "inr": 51.75,
+      "points": 50
+    },
+    {
+      "day": "Fri",
+      "kwh": 9.4,
+      "inr": 70.5,
+      "points": 70
+    },
+    {
+      "day": "Sat",
+      "kwh": 8.5,
+      "inr": 63.75,
+      "points": 65
+    },
+    {
+      "day": "Sun",
+      "kwh": 5.5,
+      "inr": 41.25,
+      "points": 35
+    }
+  ],
+  "habits": [
+    {
+      "id": "h_fan",
+      "title": "Turned off fan before rushing to mess / class",
+      "scenario": "Hostel Room Routine",
+      "kwh": 0.4,
+      "points": 20,
+      "icon": "fan",
+      "completed_today": true,
+      "vouch_count": 2,
+      "last_vouched_by": [
+        "Karthik",
+        "Vignesh"
+      ]
+    },
+    {
+      "id": "h_ac24",
+      "title": "Kept room AC at 24\u00b0C BEE standard (not 18\u00b0C chill)",
+      "scenario": "Exam Night Cooling",
+      "kwh": 1.5,
+      "points": 35,
+      "icon": "ac",
+      "completed_today": false,
+      "vouch_count": 0,
+      "last_vouched_by": []
+    },
+    {
+      "id": "h_charger",
+      "title": "Unplugged laptop & mobile chargers after 100%",
+      "scenario": "Phantom Load Slayer",
+      "kwh": 0.15,
+      "points": 15,
+      "icon": "plug",
+      "completed_today": true,
+      "vouch_count": 1,
+      "last_vouched_by": [
+        "Karthik"
+      ]
+    },
+    {
+      "id": "h_daylight",
+      "title": "Studied with natural window daylight instead of tubes",
+      "scenario": "Afternoon Study Session",
+      "kwh": 0.3,
+      "points": 15,
+      "icon": "sun",
+      "completed_today": false,
+      "vouch_count": 0,
+      "last_vouched_by": []
+    },
+    {
+      "id": "h_pc_shutdown",
+      "title": "Full PC shutdown overnight (Hibernate/Off, not Sleep)",
+      "scenario": "Post-Gaming / Lab Render",
+      "kwh": 0.9,
+      "points": 25,
+      "icon": "pc",
+      "completed_today": false,
+      "vouch_count": 0,
+      "last_vouched_by": []
+    },
+    {
+      "id": "h_geyser",
+      "title": "Turned off immersion rod after 8-min bucket warming",
+      "scenario": "Morning Routine",
+      "kwh": 1.2,
+      "points": 30,
+      "icon": "geyser",
+      "completed_today": false,
+      "vouch_count": 0,
+      "last_vouched_by": []
+    }
+  ],
+  "teams": [
+    {
+      "id": "team_block_a",
+      "name": "Nelson Mandela - Block A",
+      "code": "NMA26",
+      "motto": "Block A Zero-Waste Guardians",
+      "target_kwh": 250,
+      "achieved_kwh": 182.4,
+      "members": [
+        {
+          "name": "Arun Kumar (You)",
+          "room": "304",
+          "pts": 345,
+          "kwh": 52.4
+        },
+        {
+          "name": "Karthik R.",
+          "room": "302",
+          "pts": 310,
+          "kwh": 46.8
+        },
+        {
+          "name": "Vignesh S.",
+          "room": "305",
+          "pts": 285,
+          "kwh": 43.2
+        },
+        {
+          "name": "Preethi M.",
+          "room": "310",
+          "pts": 260,
+          "kwh": 40.0
+        }
+      ],
+      "feed": [
+        {
+          "user": "Arun Kumar",
+          "action": "Turned off fan before mess",
+          "time": "15 mins ago",
+          "id": "feed_1",
+          "vouches": 2
+        },
+        {
+          "user": "Karthik R.",
+          "action": "AC set to 24\u00b0C for night study",
+          "time": "2 hrs ago",
+          "id": "feed_2",
+          "vouches": 3
+        },
+        {
+          "user": "Vignesh S.",
+          "action": "Unplugged gaming rig overnight",
+          "time": "4 hrs ago",
+          "id": "feed_3",
+          "vouches": 1
+        }
+      ]
+    },
+    {
+      "id": "team_block_b",
+      "name": "Kalpana Chawla - Block B",
+      "code": "KCB26",
+      "motto": "Kilowatt Queens of Block B",
+      "target_kwh": 250,
+      "achieved_kwh": 168.0,
+      "members": [
+        {
+          "name": "Divya N.",
+          "room": "204",
+          "pts": 330,
+          "kwh": 49.5
+        },
+        {
+          "name": "Sneha P.",
+          "room": "206",
+          "pts": 290,
+          "kwh": 44.0
+        },
+        {
+          "name": "Ananya K.",
+          "room": "208",
+          "pts": 275,
+          "kwh": 41.5
+        },
+        {
+          "name": "Pooja V.",
+          "room": "212",
+          "pts": 220,
+          "kwh": 33.0
+        }
+      ],
+      "feed": [
+        {
+          "user": "Divya N.",
+          "action": "Daylight study session in library wing",
+          "time": "1 hr ago",
+          "id": "feed_4",
+          "vouches": 2
+        }
+      ]
+    },
+    {
+      "id": "team_block_c",
+      "name": "Vikram Sarabhai - Block C",
+      "code": "VSC26",
+      "motto": "Engineering Efficiency First",
+      "target_kwh": 200,
+      "achieved_kwh": 124.5,
+      "members": [
+        {
+          "name": "Rahul M.",
+          "room": "401",
+          "pts": 280,
+          "kwh": 42.0
+        },
+        {
+          "name": "Surya T.",
+          "room": "405",
+          "pts": 270,
+          "kwh": 40.5
+        },
+        {
+          "name": "Ajay K.",
+          "room": "408",
+          "pts": 280,
+          "kwh": 42.0
+        }
+      ],
+      "feed": [
+        {
+          "user": "Rahul M.",
+          "action": "Switched common room TV wall switch off",
+          "time": "3 hrs ago",
+          "id": "feed_5",
+          "vouches": 1
+        }
+      ]
+    }
+  ],
+  "mystery_wasters": [
+    {
+      "id": "w_fan",
+      "title": "Induction Fan in Empty Room",
+      "location": "Ceiling Center",
+      "x": 48,
+      "y": 18,
+      "wattage": 75,
+      "monthly_inr_waste": 146.25,
+      "monthly_kwh_waste": 22.5,
+      "found": false,
+      "tip": "Fans only cool people through skin convection, NOT empty room air. Turn it off when leaving!"
+    },
+    {
+      "id": "w_tv",
+      "title": "Common Room TV Blinking on Standby",
+      "location": "Entertainment Table",
+      "x": 80,
+      "y": 55,
+      "wattage": 20,
+      "monthly_inr_waste": 58.5,
+      "monthly_kwh_waste": 9.0,
+      "found": false,
+      "tip": "Standby transformers eat electricity 24/7. Switch off directly at the wall board."
+    },
+    {
+      "id": "w_light",
+      "title": "Bright Tube Light ON in Broad Daylight",
+      "location": "Upper Left Wall",
+      "x": 22,
+      "y": 24,
+      "wattage": 40,
+      "monthly_inr_waste": 78.0,
+      "monthly_kwh_waste": 12.0,
+      "found": false,
+      "tip": "Pull back curtains during 9 AM - 4 PM. Daylight is 100% free and better for your eyes."
+    },
+    {
+      "id": "w_charger",
+      "title": "Phone Charger Plugged In with Switch ON",
+      "location": "Bedside Socket",
+      "x": 16,
+      "y": 72,
+      "wattage": 8,
+      "monthly_inr_waste": 31.2,
+      "monthly_kwh_waste": 4.8,
+      "found": false,
+      "tip": "Even without a phone, charging adapters bleed vampire draw if the wall switch is ON."
+    },
+    {
+      "id": "w_pc",
+      "title": "Gaming Desktop in Sleep Mode with RGB Glowing",
+      "location": "Study Desk",
+      "x": 45,
+      "y": 68,
+      "wattage": 35,
+      "monthly_inr_waste": 91.0,
+      "monthly_kwh_waste": 14.0,
+      "found": false,
+      "tip": "Sleep mode keeps motherboard RAM energized. Use Hibernate to cut power to zero."
+    },
+    {
+      "id": "w_geyser",
+      "title": "Bathroom Immersion Rod Boiling Water Past Ready",
+      "location": "Bathroom Doorway",
+      "x": 90,
+      "y": 75,
+      "wattage": 1500,
+      "monthly_inr_waste": 292.5,
+      "monthly_kwh_waste": 45.0,
+      "found": false,
+      "tip": "High-draw heating coils eat \u20b95 every 30 minutes! Unplug immediately once water is warm."
+    }
+  ],
+  "badges": [
+    {
+      "id": "b_streak7",
+      "title": "7-Day Streak Warrior",
+      "desc": "Check in electricity-saving habits 7 days in a row.",
+      "icon": "flame",
+      "earned": false,
+      "progress": "5 / 7 days"
+    },
+    {
+      "id": "b_standby",
+      "title": "Standby Slayer",
+      "desc": "Find and neutralize all vampire wasters in NexWatt Mystery.",
+      "icon": "sword",
+      "earned": true,
+      "progress": "Completed"
+    },
+    {
+      "id": "b_century",
+      "title": "Century Saver (100 kWh)",
+      "desc": "Accumulate 100 kWh of verified energy conservation.",
+      "icon": "trophy",
+      "earned": false,
+      "progress": "52.4 / 100 kWh"
+    },
+    {
+      "id": "b_pact",
+      "title": "Pact Pioneer",
+      "desc": "Join or create a hostel squad to compete together.",
+      "icon": "shield",
+      "earned": true,
+      "progress": "Active in Block A"
+    },
+    {
+      "id": "b_greenthumb",
+      "title": "Hostel Green Thumb",
+      "desc": "Evolve your Energy Impact Garden to Stage 3 or higher.",
+      "icon": "sprout",
+      "earned": true,
+      "progress": "Stage 3 (Hostel Plant)"
+    },
+    {
+      "id": "b_daylight",
+      "title": "Sunlight Scholar",
+      "desc": "Log the natural daylight study habit at least 5 times.",
+      "icon": "sun",
+      "earned": false,
+      "progress": "3 / 5 times"
+    }
+  ],
+  "bill_comparison_history": [
+    {
+      "month_label": "September 2026 vs October 2026",
+      "prev_units": 260,
+      "curr_units": 195,
+      "kwh_saved": 65,
+      "inr_saved": 395.0,
+      "percentage_drop": 25.0,
+      "note": "Kept below 200 units threshold! Avoided higher slab."
+    }
+  ]
+}

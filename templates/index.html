@@ -1,0 +1,254 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | NexWatt - Student Energy Intelligence{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrap">
+
+  <!-- TOP HERO WELCOME -->
+  <div class="dash-hero">
+    <div class="dash-hero-text">
+      <div class="hostel-badge">
+        <span class="hostel-dot"></span>
+        <span>{{ user.hostel }} &bull; <strong>{{ user.room }}</strong></span>
+      </div>
+      <h1 class="dash-greeting">Hey {{ user.name.split(' ')[0] }}! Ready to save electricity today? ⚡</h1>
+      <p class="dash-subtitle">
+        Your daily habits directly power <strong>Nelson Mandela Block A</strong> on the campus leaderboard. Small changes before leaving for mess or lab make a massive difference!
+      </p>
+    </div>
+
+    <!-- STREAK CARD -->
+    <div class="hero-streak-card">
+      <div class="streak-flame-box">
+        <span class="streak-flame">🔥</span>
+      </div>
+      <div class="streak-meta">
+        <span class="streak-count">{{ user.streak_days }} Days</span>
+        <span class="streak-label">Conservation Streak</span>
+        <span class="streak-hint">Check in 1 habit today to maintain!</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 PRIMARY KPI METRIC CARDS -->
+  <div class="kpi-grid">
+    <!-- KPI 1: Energy Saved -->
+    <div class="kpi-card kpi-emerald">
+      <div class="kpi-top">
+        <span class="kpi-icon-wrap">⚡</span>
+        <span class="kpi-tag">METERED SAVINGS</span>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-number" id="kpiKwh">{{ user.total_kwh_saved }}</span>
+        <span class="kpi-unit">kWh Units</span>
+      </div>
+      <div class="kpi-footer">
+        <span>Equivalent to powering your hostel fan for <strong>{{ (user.total_kwh_saved / 0.075)|round|int }} hours</strong></span>
+      </div>
+    </div>
+
+    <!-- KPI 2: Money Saved -->
+    <div class="kpi-card kpi-yellow">
+      <div class="kpi-top">
+        <span class="kpi-icon-wrap">💰</span>
+        <span class="kpi-tag">FINANCIAL IMPACT</span>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-number inr-color" id="kpiInr">₹{{ user.total_inr_saved }}</span>
+        <span class="kpi-unit">Rupees Saved</span>
+      </div>
+      <div class="kpi-footer">
+        <span>Saved based on Tamil Nadu progressive slab tariffs</span>
+      </div>
+    </div>
+
+    <!-- KPI 3: CO2 Avoided -->
+    <div class="kpi-card kpi-cyan">
+      <div class="kpi-top">
+        <span class="kpi-icon-wrap">🌍</span>
+        <span class="kpi-tag">CARBON ABATED</span>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-number" id="kpiCo2">{{ user.co2_avoided_kg }}</span>
+        <span class="kpi-unit">kg CO₂</span>
+      </div>
+      <div class="kpi-footer">
+        <span>Official CEA benchmark: <strong>0.75 kg CO₂ / kWh</strong></span>
+      </div>
+    </div>
+
+    <!-- KPI 4: Garden Stage -->
+    <div class="kpi-card kpi-green">
+      <div class="kpi-top">
+        <span class="kpi-icon-wrap">🌱</span>
+        <span class="kpi-tag">LIVING GARDEN</span>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-number stage-title">{{ garden.stage_name }}</span>
+        <span class="kpi-unit">Stage {{ garden.stage_number }} of 5</span>
+      </div>
+      <div class="kpi-footer">
+        <div class="garden-mini-bar">
+          <div class="garden-mini-fill" style="width: {{ garden.progress_percent }}%;"></div>
+        </div>
+        <span class="garden-mini-note">{{ garden.points_to_next }} pts to {{ garden.next_stage_name }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD MAIN TWO-COLUMN CONTENT -->
+  <div class="dash-content-grid">
+
+    <!-- LEFT COLUMN: CHART & HABIT CHECKLIST -->
+    <div class="dash-col-left">
+
+      <!-- 7-DAY LINE CHART CARD -->
+      <div class="chart-card">
+        <div class="card-header-row">
+          <div>
+            <h2 class="card-title">📈 7-Day Conservation Trajectory</h2>
+            <p class="card-sub">Daily verified electricity units saved by your room over the past week.</p>
+          </div>
+          <div class="chart-legend-box">
+            <span class="legend-indicator"></span>
+            <span>Daily kWh Saved</span>
+          </div>
+        </div>
+
+        <div class="chart-canvas-box">
+          <canvas id="sevenDayChart" height="230"></canvas>
+        </div>
+      </div>
+
+      <!-- TODAY'S HABIT QUICK-ACTION CARD -->
+      <div class="quick-habits-card">
+        <div class="card-header-row">
+          <div>
+            <h2 class="card-title">✅ Daily Habit Protocol (Room 304)</h2>
+            <p class="card-sub">Check off electricity-saving actions today. Max <strong>{{ config.DAILY_POINTS_CAP }} pts/day</strong> to keep competition fair.</p>
+          </div>
+          <a href="{{ url_for('habits') }}" class="view-all-link">Full Checklist &rarr;</a>
+        </div>
+
+        <div class="habits-list-mini">
+          {% for h in habits[:4] %}
+          <div class="habit-row-item {% if h.completed_today %}done{% endif %}" onclick="toggleHabitFast('{{ h.id }}', this)">
+            <div class="habit-check-box">
+              <span class="tick-mark">{% if h.completed_today %}✓{% endif %}</span>
+            </div>
+            <div class="habit-main-col">
+              <span class="habit-title-text">{{ h.title }}</span>
+              <span class="habit-scenario-sub">{{ h.scenario }} &bull; Saves ~{{ h.kwh }} kWh</span>
+            </div>
+            <div class="habit-badge-col">
+              <span class="pts-pill">+{{ h.points }} pts</span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN: LIVING GARDEN PREVIEW & FEATURE TILES -->
+    <div class="dash-col-right">
+
+      <!-- LIVING GARDEN PREVIEW TILE -->
+      <div class="garden-preview-card">
+        <div class="gp-header">
+          <div>
+            <span class="gp-tag">BIOPHILIC ECOSYSTEM</span>
+            <h3 class="gp-title">{{ garden.stage_name }}</h3>
+          </div>
+          <a href="{{ url_for('garden') }}" class="btn-green-subtle">Enter Garden 🌿</a>
+        </div>
+
+        <!-- Hand-drawn SVG Garden Art Preview -->
+        <div class="garden-svg-preview-box">
+          <svg viewBox="0 0 200 220" width="180" height="190" xmlns="http://www.w3.org/2000/svg">
+            <!-- Soil Pot (Hand-Drawn Style) -->
+            <ellipse cx="100" cy="190" rx="45" ry="12" fill="#2d1c10" stroke="#4a2e1b" stroke-width="2"/>
+            <path d="M60 190 L68 150 L132 150 L140 190 Z" fill="#78350f" stroke="#92400e" stroke-width="2.5" stroke-linejoin="round"/>
+            <ellipse cx="100" cy="150" rx="32" ry="8" fill="#451a03" stroke="#92400e" stroke-width="2"/>
+
+            <!-- Stem Lines -->
+            <path d="M100 150 Q96 110 100 70" fill="none" stroke="#22c55e" stroke-width="6" stroke-linecap="round"/>
+            <path d="M98 115 Q75 100 70 80 Q90 85 98 108" fill="#16a34a" stroke="#4ade80" stroke-width="2"/>
+            <path d="M100 100 Q125 88 132 70 Q112 75 101 94" fill="#22c55e" stroke="#86efac" stroke-width="2"/>
+            <path d="M100 70 Q80 50 82 32 Q98 42 100 65" fill="#4ade80" stroke="#bbf7d0" stroke-width="2"/>
+            <path d="M100 65 Q120 45 125 28 Q108 38 100 60" fill="#22c55e" stroke="#86efac" stroke-width="2"/>
+
+            <!-- Golden Sun Rays / Dew -->
+            <circle cx="100" cy="30" r="10" fill="#facc15" opacity="0.85"/>
+            <circle cx="100" cy="30" r="5" fill="#fef08a"/>
+            <!-- Sparkles -->
+            <circle cx="68" cy="65" r="2.5" fill="#fde047"/>
+            <circle cx="136" cy="55" r="2" fill="#fde047"/>
+            <circle cx="120" cy="110" r="2" fill="#4ade80"/>
+          </svg>
+        </div>
+
+        <div class="gp-footer-meta">
+          <p class="gp-desc">{{ garden.stage_desc }}</p>
+          <div class="gp-progress-wrap">
+            <div class="gp-bar">
+              <div class="gp-fill" style="width: {{ garden.progress_percent }}%;"></div>
+            </div>
+            <span class="gp-nums">{{ user.points }} pts &bull; {{ garden.points_to_next }} needed for Stage {{ garden.stage_number + 1 }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SATHYABAMA HOSTEL LEAGUE MINI-WIDGET -->
+      <div class="pact-preview-card">
+        <div class="pp-head">
+          <div>
+            <span class="squad-pill">YOUR SQUAD</span>
+            <h3 class="pp-title">Nelson Mandela - Block A</h3>
+          </div>
+          <span class="rank-chip">Rank #1 🏆</span>
+        </div>
+
+        <div class="pp-progress-box">
+          <div class="pp-meter-labels">
+            <span>Goal: 250 kWh</span>
+            <strong>182.4 kWh (73%)</strong>
+          </div>
+          <div class="pp-meter-track">
+            <div class="pp-meter-fill" style="width: 73%;"></div>
+          </div>
+        </div>
+
+        <div class="pp-rivalry-callout">
+          <span>⚔️ Leading <strong>Kalpana Chawla Block B</strong> by +14.4 kWh!</span>
+        </div>
+
+        <a href="{{ url_for('pact') }}" class="btn-outline-block">Enter Hostel League &rarr;</a>
+      </div>
+
+      <!-- NEXWATT MYSTERY PROMO -->
+      <div class="mystery-promo-card">
+        <div class="mp-inner">
+          <span class="mp-icon">🕵️</span>
+          <div class="mp-text">
+            <h4>NexWatt Mystery Room</h4>
+            <p>Can you find all 6 hidden electricity wasters in the simulated hostel room within 45 seconds?</p>
+          </div>
+        </div>
+        <a href="{{ url_for('mystery') }}" class="btn-mystery-action">Play Detective Game ⏱️</a>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Pass 7-day history array from Python to JavaScript
+  const rawHistory = {{ history | tojson }};
+</script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Badges & Achievements | NexWatt{% endblock %}
+
+{% block content %}
+<div class="content-container">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header-box">
+    <div class="ph-tag">CAMPUS ECO RECOGNITION</div>
+    <h1 class="ph-title">Energy Conservation Badges & Achievements</h1>
+    <p class="ph-subtitle">
+      Celebrate your sustainability milestones! Complete daily habit streaks, defeat vampire phantom loads, lead your hostel wing, and unlock prestigious campus conservation honors.
+    </p>
+  </div>
+
+  <!-- SUMMARY HERO CARD -->
+  <div class="badges-summary-card">
+    <div class="bsc-item">
+      <span class="bsc-lbl">BADGES UNLOCKED</span>
+      <span class="bsc-val inr-color">3 / 6 Badges</span>
+    </div>
+    <div class="bsc-item">
+      <span class="bsc-lbl">TOTAL CONSERVATION POINTS</span>
+      <span class="bsc-val text-yellow">⭐ {{ user.points }} pts</span>
+    </div>
+    <div class="bsc-item">
+      <span class="bsc-lbl">CURRENT RANK</span>
+      <span class="bsc-val">Block A Squad Captain</span>
+    </div>
+  </div>
+
+  <!-- BADGES GRID -->
+  <div class="badges-full-grid">
+    {% for b in badges %}
+    <div class="badge-card-item {% if b.earned %}badge-unlocked{% else %}badge-locked{% endif %}">
+      <div class="bci-top">
+        <div class="bci-icon-box">
+          {% if b.icon == 'flame' %}🔥
+          {% elif b.icon == 'sword' %}🗡️
+          {% elif b.icon == 'trophy' %}🏆
+          {% elif b.icon == 'shield' %}🛡️
+          {% elif b.icon == 'sprout' %}🌱
+          {% elif b.icon == 'sun' %}☀️
+          {% else %}⭐
+          {% endif %}
+        </div>
+        <span class="bci-status-chip">
+          {% if b.earned %}UNLOCKED ✨{% else %}LOCKED 🔒{% endif %}
+        </span>
+      </div>
+
+      <div class="bci-body">
+        <h3 class="bci-title">{{ b.title }}</h3>
+        <p class="bci-desc">{{ b.desc }}</p>
+      </div>
+
+      <div class="bci-footer">
+        <div class="bci-progress-label">
+          <span>Progress:</span>
+          <strong>{{ b.progress }}</strong>
+        </div>
+        {% if b.earned %}
+        <div class="bci-earned-indicator">
+          <span>Badge Achieved &amp; Active on Campus</span>
+        </div>
+        {% else %}
+        <div class="bci-locked-hint">
+          <span>Keep checking in habits to unlock</span>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- HOW TO UNLOCK MORE BADGES -->
+  <div class="card-box" style="margin-top:28px;">
+    <h3 class="card-title">🎖️ How to Unlock the Remaining Badges:</h3>
+    <div class="acc-grid">
+      <div class="acc-col">
+        <strong>1. 7-Day Streak Warrior:</strong>
+        <p>Complete at least 1 habit check-in for 2 more consecutive days to finish your 7-day streak.</p>
+      </div>
+      <div class="acc-col">
+        <strong>2. Century Saver (100 kWh):</strong>
+        <p>You have currently saved {{ user.total_kwh_saved }} kWh. Keep logging habits to hit the 100 kWh milestone!</p>
+      </div>
+      <div class="acc-col">
+        <strong>3. Sunlight Scholar:</strong>
+        <p>Check off the 'Studied with natural window daylight' habit 2 more times to earn this award.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

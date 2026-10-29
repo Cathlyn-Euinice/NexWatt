@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+
+{% block title %}Bill Comparison | NexWatt{% endblock %}
+
+{% block content %}
+<div class="content-container">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header-box">
+    <div class="ph-tag">REAL-WORLD METER AUDIT</div>
+    <h1 class="ph-title">Month-to-Month Bill & Units Comparison</h1>
+    <p class="ph-subtitle">
+      Have a physical or digital electricity bill from your hostel floor, home, or apartment? Enter the metered units (kWh) from last month and this month to calculate exact savings, slab progression, and financial reduction.
+    </p>
+  </div>
+
+  <div class="comp-layout-grid">
+
+    <!-- LEFT: BILL INPUT FORM -->
+    <div class="comp-input-card">
+      <h2 class="card-title">📝 Enter Electricity Bill Readings</h2>
+      <p class="card-sub">Look at the 'Total Units Consumed' or 'kWh' line on your utility slip.</p>
+
+      <div class="form-group">
+        <label class="form-label" for="billMonthLabel">Billing Period Description:</label>
+        <input type="text" id="billMonthLabel" class="form-input" placeholder="e.g. September 2026 vs October 2026" value="September 2026 vs October 2026">
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label class="form-label" for="prevUnitsInput">Previous Month Units (kWh):</label>
+          <div class="input-unit-wrap">
+            <input type="number" id="prevUnitsInput" class="form-input" value="260" min="0" max="5000" oninput="runBillComparisonLive()">
+            <span class="input-unit">Units</span>
+          </div>
+          <span class="field-hint">e.g. Higher consumption bill</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="currUnitsInput">Current Month Units (kWh):</label>
+          <div class="input-unit-wrap">
+            <input type="number" id="currUnitsInput" class="form-input" value="195" min="0" max="5000" oninput="runBillComparisonLive()">
+            <span class="input-unit">Units</span>
+          </div>
+          <span class="field-hint">e.g. After practicing NexWatt habits</span>
+        </div>
+      </div>
+
+      <div class="comp-action-btn-row">
+        <button class="btn-primary-action" onclick="saveComparisonToHistory()">💾 Save to Room History</button>
+      </div>
+
+      <div class="tariff-badge-note" style="margin-top:20px;">
+        <span class="tb-icon">⚡</span>
+        <div>
+          <strong>Tamil Nadu Domestic Slab Logic Applied:</strong>
+          <span>0-100 units free, then progressively calculated through TANGEDCO brackets.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: COMPARISON OUTCOME -->
+    <div class="comp-results-card">
+      <h2 class="card-title">📊 Month-to-Month Audit Breakdown</h2>
+      <p class="card-sub">Comparative analysis of consumption change and monetary impact.</p>
+
+      <div class="comp-vs-display">
+        <div class="cvd-col">
+          <span class="cvd-lbl">PREVIOUS MONTH</span>
+          <span class="cvd-units" id="dispPrevUnits">260 Units</span>
+          <span class="cvd-bill inr-danger" id="dispPrevBill">₹495.00</span>
+          <span class="cvd-sub">TANGEDCO Slab Bill</span>
+        </div>
+
+        <div class="cvd-divider">
+          <span class="cvd-arrow">&rarr;</span>
+        </div>
+
+        <div class="cvd-col">
+          <span class="cvd-lbl">CURRENT MONTH</span>
+          <span class="cvd-units text-green" id="dispCurrUnits">195 Units</span>
+          <span class="cvd-bill inr-color" id="dispCurrBill">₹213.75</span>
+          <span class="cvd-sub">TANGEDCO Slab Bill</span>
+        </div>
+      </div>
+
+      <!-- HIGHLIGHT TILES -->
+      <div class="comp-delta-grid">
+        <div class="cdg-tile">
+          <span class="cdg-lbl">UNITS REDUCED</span>
+          <span class="cdg-num text-green" id="dispUnitsDiff">-65 kWh</span>
+          <span class="cdg-sub" id="dispPctDiff">25.0% Reduction</span>
+        </div>
+
+        <div class="cdg-tile cdg-highlight">
+          <span class="cdg-lbl">NET MONEY SAVED</span>
+          <span class="cdg-num inr-color" id="dispInrDiff">₹281.25</span>
+          <span class="cdg-sub">Lower utility bill</span>
+        </div>
+
+        <div class="cdg-tile">
+          <span class="cdg-lbl">CO₂ AVOIDED</span>
+          <span class="cdg-num text-cyan" id="dispCo2Diff">48.75 kg</span>
+          <span class="cdg-sub">Emissions prevented</span>
+        </div>
+      </div>
+
+      <!-- FEEDBACK CALLOUT -->
+      <div class="comp-feedback-box" id="dispFeedbackBox">
+        <span class="cfb-icon">🎉</span>
+        <p class="cfb-text" id="dispFeedbackText">
+          Awesome work! You reduced electricity consumption by 25.0% and kept your room under the 200 units threshold!
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SAVED COMPARISONS HISTORY -->
+  <div class="history-card" style="margin-top:28px;">
+    <h3 class="card-title">📜 Past Utility Bill Comparisons (Room 304)</h3>
+    <p class="card-sub">Audited records of monthly meter submissions.</p>
+
+    <div class="table-scroll-wrap">
+      <table class="roster-table">
+        <thead>
+          <tr>
+            <th>Billing Period</th>
+            <th>Previous Units</th>
+            <th>Current Units</th>
+            <th>Units Saved</th>
+            <th>Money Saved</th>
+            <th>Student Notes</th>
+          </tr>
+        </thead>
+        <tbody id="historyTableBody">
+          {% for h in history %}
+          <tr>
+            <td><strong>{{ h.month_label }}</strong></td>
+            <td>{{ h.prev_units }} kWh</td>
+            <td>{{ h.curr_units }} kWh</td>
+            <td class="kwh-color">⚡ -{{ h.kwh_saved }} kWh ({{ h.percentage_drop }}%)</td>
+            <td class="inr-color">💰 ₹{{ "%.2f"|format(h.inr_saved) }}</td>
+            <td style="color:var(--text-muted); font-size:0.85rem;">{{ h.note }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function calculateTNSlab(u) {
+    if (u <= 0) return 0;
+    let bill = 0;
+    if (u > 0) bill += Math.min(u, 100) * 0.0;
+    if (u > 100) bill += Math.min(u - 100, 100) * 2.25;
+    if (u > 200) bill += Math.min(u - 200, 200) * 4.50;
+    if (u > 400) bill += Math.min(u - 400, 100) * 6.00;
+    if (u > 500) bill += (u - 500) * 8.00;
+    return bill;
+  }
+
+  function runBillComparisonLive() {
+    const prev = parseFloat(document.getElementById('prevUnitsInput').value) || 0;
+    const curr = parseFloat(document.getElementById('currUnitsInput').value) || 0;
+
+    const prevBill = calculateTNSlab(prev);
+    const currBill = calculateTNSlab(curr);
+
+    const diffKwh = prev - curr;
+    const diffInr = prevBill - currBill;
+    const pct = prev > 0 ? ((diffKwh / prev) * 100).toFixed(1) : 0;
+    const co2 = (diffKwh * 0.75).toFixed(2);
+
+    document.getElementById('dispPrevUnits').innerText = `${prev} Units`;
+    document.getElementById('dispPrevBill').innerText = `₹${prevBill.toFixed(2)}`;
+    document.getElementById('dispCurrUnits').innerText = `${curr} Units`;
+    document.getElementById('dispCurrBill').innerText = `₹${currBill.toFixed(2)}`;
+
+    document.getElementById('dispUnitsDiff').innerText = `${diffKwh >= 0 ? '-' : '+'}${Math.abs(diffKwh)} kWh`;
+    document.getElementById('dispPctDiff').innerText = `${pct}% ${diffKwh >= 0 ? 'Reduction' : 'Increase'}`;
+    document.getElementById('dispInrDiff').innerText = `₹${Math.abs(diffInr).toFixed(2)}`;
+    document.getElementById('dispCo2Diff').innerText = `${co2} kg`;
+
+    const feedback = document.getElementById('dispFeedbackText');
+    if (diffKwh > 0) {
+      feedback.innerText = `Awesome work! You reduced electricity consumption by ${pct}% and saved ₹${diffInr.toFixed(2)} this month!`;
+    } else if (diffKwh === 0) {
+      feedback.innerText = "Consumption remained the same. Check daily habits to start reducing!";
+    } else {
+      feedback.innerText = `Usage increased by ${Math.abs(pct)}% (+${Math.abs(diffKwh)} units). Investigate phantom loads in the Mystery Room!`;
+    }
+  }
+
+  async function saveComparisonToHistory() {
+    const prev = parseFloat(document.getElementById('prevUnitsInput').value) || 0;
+    const curr = parseFloat(document.getElementById('currUnitsInput').value) || 0;
+    const label = document.getElementById('billMonthLabel').value || "Monthly Comparison";
+
+    try {
+      const res = await fetch('/api/comparison/calculate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prev_units: prev, curr_units: curr, month_label: label })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast("Bill comparison saved to room records!", "📄");
+        setTimeout(() => window.location.reload(), 700);
+      }
+    } catch(e) {
+      alert("Failed to save comparison.");
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', runBillComparisonLive);
+</script>
+{% endblock %}

@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}NexWatt Mystery Room | Dexathon 2026{% endblock %}
+
+{% block content %}
+<div class="content-container">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header-box">
+    <div class="ph-tag">INTERACTIVE DETECTIVE SIMULATOR</div>
+    <h1 class="ph-title">NexWatt Mystery: The Phantom Load Detective</h1>
+    <p class="ph-subtitle">
+      A typical student hostel room has 6 sneaky electricity leaks running silently. Click on the pulsating wasters before the <strong>45-second timer</strong> runs out to diagnose the leak, eliminate monthly ₹ waste, and claim bonus points!
+    </p>
+  </div>
+
+  <!-- GAME TOP STATUS BAR -->
+  <div class="mystery-top-bar">
+    <div class="mtb-item">
+      <span class="mtb-label">TIMER REMAINING</span>
+      <span class="mtb-val timer-color" id="gameTimer">45s</span>
+    </div>
+    <div class="mtb-item">
+      <span class="mtb-label">WASATERS NEUTRALIZED</span>
+      <span class="mtb-val" id="foundCount">0 / 6</span>
+    </div>
+    <div class="mtb-item">
+      <span class="mtb-label">MONTHLY ₹ LEAK ELIMINATED</span>
+      <span class="mtb-val inr-color" id="moneyEliminated">₹0.00</span>
+    </div>
+    <div class="mtb-actions">
+      <button class="btn-game-primary" id="btnStartGame" onclick="startMysteryGame()">▶️ Start 45s Challenge</button>
+      <button class="btn-game-secondary" onclick="resetMysteryGame()">🔄 Reset Room</button>
+    </div>
+  </div>
+
+  <div class="mystery-game-grid">
+
+    <!-- LEFT: INTERACTIVE ROOM CANVAS / SCHEMATIC -->
+    <div class="room-viewport-card">
+      <div class="room-canvas" id="mysteryRoomCanvas">
+        <!-- Room Isometric/Perspective Background Graphic -->
+        <div class="room-grid-floor"></div>
+
+        <!-- Room Structural Elements -->
+        <div class="room-window">
+          <div class="window-sunlight"></div>
+          <span class="window-label">Sunlight streaming in ☀️</span>
+        </div>
+
+        <div class="room-study-desk">
+          <div class="desk-surface"></div>
+          <span class="desk-label">Study Desk</span>
+        </div>
+
+        <div class="room-bedside">
+          <span class="bed-label">Hostel Bunk Bed 🛏️</span>
+        </div>
+
+        <div class="room-common-table">
+          <span class="common-label">Common Table</span>
+        </div>
+
+        <!-- 6 INTERACTIVE HOTSPOT PINS -->
+        {% for w in wasters %}
+        <button class="waster-pin waster-pin-{{ w.id }} {% if w.found %}neutralized{% endif %}"
+                id="pin-{{ w.id }}"
+                style="left: {{ w.x }}%; top: {{ w.y }}%;"
+                onclick="clickWaster('{{ w.id }}')"
+                title="{{ w.title }}">
+          <span class="ping-circle"></span>
+          <span class="pin-icon">
+            {% if w.id == 'w_fan' %}🌀
+            {% elif w.id == 'w_tv' %}📺
+            {% elif w.id == 'w_light' %}💡
+            {% elif w.id == 'w_charger' %}🔌
+            {% elif w.id == 'w_pc' %}🖥️
+            {% elif w.id == 'w_geyser' %}🚿
+            {% endif %}
+          </span>
+          <span class="pin-tag-text">{{ w.title.split(' ')[0] }}</span>
+        </button>
+        {% endfor %}
+
+        <!-- Click Helper Banner -->
+        <div class="room-instruction-pill" id="roomInstruction">
+          <span>🎯 Click <strong>"▶️ Start 45s Challenge"</strong> above to begin your detective inspection!</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: DIAGNOSTIC LOG & LIVE LEAK FEED -->
+    <div class="diagnostic-log-card">
+      <h3 class="card-title">🔬 Inspection Terminal</h3>
+      <p class="card-sub">Real-time electrical and tariff breakdown of investigated appliances.</p>
+
+      <div class="diag-terminal-feed" id="diagTerminal">
+        <div class="term-placeholder" id="termPlaceholder">
+          <span class="term-empty-ico">🕵️</span>
+          <h4>Ready for Inspection</h4>
+          <p>Click any highlighted hotspot pin in the hostel room above to diagnose its wattage leak and monthly cost in Rupees.</p>
+        </div>
+
+        <!-- Dynamic waster detail cards injected here via JS -->
+        <div id="termActiveCards" class="term-active-list"></div>
+      </div>
+
+      <!-- Live Total Summary Box -->
+      <div class="term-summary-box">
+        <div class="ts-row">
+          <span>Total Room Waste Found:</span>
+          <strong id="termTotalKwh">0.0 kWh/month</strong>
+        </div>
+        <div class="ts-row">
+          <span>Money Leaking from Room 304:</span>
+          <strong class="inr-color" id="termTotalInr">₹0.00 / month</strong>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- GAME OVER / RESULTS MODAL -->
+  <div id="gameModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">🏆 Inspection Complete!</h3>
+        <button class="modal-close-btn" onclick="closeGameModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-rank-badge" id="modalRankBadge">
+          <span class="mrb-icon">🎖️</span>
+          <div>
+            <h4 id="modalRankTitle">Senior Energy Detective</h4>
+            <span class="mrb-desc">Sathyabama Hostel Efficiency Division</span>
+          </div>
+        </div>
+
+        <div class="modal-stats-grid">
+          <div class="msg-tile">
+            <span class="msg-lbl">WASATERS FOUND</span>
+            <span class="msg-num" id="modalFoundNum">6 / 6</span>
+          </div>
+          <div class="msg-tile">
+            <span class="msg-lbl">MONTHLY SAVED</span>
+            <span class="msg-num inr-color" id="modalMoneySaved">₹666.45</span>
+          </div>
+          <div class="msg-tile">
+            <span class="msg-lbl">POINTS EARNED</span>
+            <span class="msg-num text-yellow" id="modalPointsEarned">+60 pts</span>
+          </div>
+        </div>
+
+        <p class="modal-remedy-note" id="modalRemedyNote">
+          By eliminating these 6 phantom loads, a 4-person hostel wing saves over <strong>₹8,000 every semester</strong>!
+        </p>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-game-secondary" onclick="closeGameModal()">Close Report</button>
+        <button class="btn-game-primary" onclick="startMysteryGame(); closeGameModal();">Play Again ⏱️</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Pass wasters array from Python to JavaScript
+  const wastersData = {{ wasters | tojson }};
+</script>
+<script src="{{ url_for('static', filename='js/mystery.js') }}"></script>
+{% endblock %}

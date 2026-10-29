@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}Savings Calculator | NexWatt{% endblock %}
+
+{% block content %}
+<div class="content-container">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header-box">
+    <div class="ph-tag">APPLIANCE AUDIT ENGINE</div>
+    <h1 class="ph-title">Appliance Electricity & Cost Savings Calculator</h1>
+    <p class="ph-subtitle">
+      Select an appliance or enter your own custom wattage. See exactly how much energy, money in Rupees, and carbon emissions you save by cutting out wasted operating hours.
+    </p>
+  </div>
+
+  <div class="calc-layout-grid">
+
+    <!-- LEFT: CALCULATOR INPUTS -->
+    <div class="calc-card">
+      <h2 class="card-title">⚙️ Select Appliance & Wasted Hours</h2>
+      <p class="card-sub">Choose a preset from typical hostel/household items or type custom values.</p>
+
+      <div class="form-group">
+        <label class="form-label" for="applianceSelect">Choose Appliance Preset:</label>
+        <select id="applianceSelect" class="form-select" onchange="handleApplianceChange()">
+          {% for app in appliances %}
+          <option value="{{ app.id }}" data-watt="{{ app.wattage }}" data-hours="{{ app.default_hours }}">
+            {{ app.name }} ({{ app.wattage }}W) &bull; {{ app.category }}
+          </option>
+          {% endfor %}
+          <option value="custom" data-watt="100" data-hours="4">-- Custom Appliance (Manual Wattage) --</option>
+        </select>
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label class="form-label" for="wattageInput">Appliance Power Rating (Watts):</label>
+          <div class="input-unit-wrap">
+            <input type="number" id="wattageInput" class="form-input" value="75" min="1" max="10000" oninput="calculateSavingsLive()">
+            <span class="input-unit">Watts (W)</span>
+          </div>
+          <span class="field-hint">Auto-filled based on typical Indian BEE ratings.</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="hoursInput">Wasted Operating Time per Day:</label>
+          <div class="input-unit-wrap">
+            <input type="number" id="hoursInput" class="form-input" value="6" min="0.1" max="24" step="0.5" oninput="calculateSavingsLive()">
+            <span class="input-unit">Hours / day</span>
+          </div>
+          <span class="field-hint">Hours left running without anybody using it.</span>
+        </div>
+      </div>
+
+      <!-- Quick Slider for Hours -->
+      <div class="slider-wrap">
+        <div class="slider-label-row">
+          <span>Quick Hours Slider:</span>
+          <strong id="sliderHoursDisplay">6.0 hrs/day</strong>
+        </div>
+        <input type="range" id="hoursSlider" min="0.5" max="24" step="0.5" value="6" class="range-slider" oninput="syncHoursSlider(this.value)">
+      </div>
+
+      <!-- Tamil Nadu Tariff Note -->
+      <div class="tariff-badge-note">
+        <span class="tb-icon">🏛️</span>
+        <div>
+          <strong>Tariff Schedule Grounding:</strong>
+          <span>Calculated using <strong>{{ tariff.name }}</strong> (Blended institutional/domestic rate of <strong>₹{{ tariff.average_rate_per_kwh }} / kWh</strong>).</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: CALCULATED SAVINGS RESULTS -->
+    <div class="calc-results-card">
+      <h2 class="card-title">💰 Projected Conservation Impact</h2>
+      <p class="card-sub">Estimated reduction if you switch off this appliance during wasted hours.</p>
+
+      <!-- Big Highlighted Metric -->
+      <div class="big-saving-box">
+        <span class="bs-label">ANNUAL MONEY SAVED</span>
+        <div class="bs-val inr-color" id="resYearlyInr">₹1,067.62</div>
+        <span class="bs-sub">Per year saved in your pocket / hostel budget</span>
+      </div>
+
+      <!-- 3 Time-Period Summary Tiles -->
+      <div class="savings-tier-grid">
+        <div class="st-tile">
+          <span class="st-period">DAILY</span>
+          <span class="st-kwh" id="resDailyKwh">0.450 kWh</span>
+          <span class="st-inr" id="resDailyInr">₹2.93</span>
+        </div>
+
+        <div class="st-tile st-featured">
+          <span class="st-period">MONTHLY (30d)</span>
+          <span class="st-kwh" id="resMonthlyKwh">13.50 kWh</span>
+          <span class="st-inr inr-color" id="resMonthlyInr">₹87.75</span>
+        </div>
+
+        <div class="st-tile">
+          <span class="st-period">YEARLY (365d)</span>
+          <span class="st-kwh" id="resYearlyKwh">164.25 kWh</span>
+          <span class="st-inr inr-color" id="resYearlyInr2">₹1,067.62</span>
+        </div>
+      </div>
+
+      <!-- Ecological Equivalents -->
+      <div class="eco-equivalents-box">
+        <h4 class="eco-head">🌱 Ecological Equivalency:</h4>
+        <div class="eco-row">
+          <span class="eco-bullet">🌍</span>
+          <span>Annual Carbon Emissions Avoided: <strong id="resYearlyCo2">123.19 kg CO₂</strong></span>
+        </div>
+        <div class="eco-row">
+          <span class="eco-bullet">🌲</span>
+          <span>Equivalent mature trees required to absorb this CO₂: <strong id="resTrees">5.7 Trees</strong></span>
+        </div>
+      </div>
+
+      <!-- Math Formula Transparency (for Judges) -->
+      <div class="formula-box">
+        <span class="fb-title">📐 How the Math Works (Plain English):</span>
+        <p class="fb-code">Daily kWh = (Watts &times; Hours) &divide; 1,000<br>
+        Money Saved = Monthly kWh &times; ₹{{ tariff.average_rate_per_kwh }}<br>
+        CO₂ Abated = kWh Saved &times; {{ config.CO2_FACTOR_KG_PER_KWH }} kg CO₂/kWh</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TAMIL NADU SLAB STRUCTURE REFERENCE TABLE -->
+  <div class="slab-table-card">
+    <div class="card-header-row">
+      <div>
+        <h3 class="card-title">📜 Tamil Nadu (TANGEDCO) Domestic Tariff Slab Reference</h3>
+        <p class="card-sub">Defined directly in <code>config.py</code>. Tamil Nadu gives the first 100 units free, making higher consumption slabs steeply non-linear.</p>
+      </div>
+    </div>
+
+    <div class="table-scroll-wrap">
+      <table class="tangedco-table">
+        <thead>
+          <tr>
+            <th>Consumption Slab</th>
+            <th>Rate per Unit (₹/kWh)</th>
+            <th>Student / Hostel Takeaway</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for slab in tariff.slabs %}
+          <tr>
+            <td><strong>{{ slab.label }}</strong></td>
+            <td class="rate-td">{% if slab.rate == 0.0 %}<span class="free-chip">FREE (Subsidized)</span>{% else %}₹{{ "%.2f"|format(slab.rate) }}{% endif %}</td>
+            <td class="note-td">
+              {% if loop.index == 1 %}
+              Government subsidized base tier. Ideal for highly disciplined single dorms.
+              {% elif loop.index == 2 %}
+              Typical target zone for conscious 2-student hostel rooms.
+              {% elif loop.index == 3 %}
+              Average consumption zone when standard 75W induction fans run 16+ hours.
+              {% elif loop.index == 4 %}
+              Entering high-cost threshold. Every extra unit costs more.
+              {% else %}
+              Maximum penalty zone. AC left running all night pushes rooms into this slab.
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const averageTariffRate = {{ tariff.average_rate_per_kwh }};
+  const co2Factor = {{ config.CO2_FACTOR_KG_PER_KWH }};
+</script>
+<script src="{{ url_for('static', filename='js/simulator.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,299 @@
+{% extends "base.html" %}
+
+{% block title %}Power Pact | Sathyabama Hostel League{% endblock %}
+
+{% block content %}
+<div class="content-container">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header-box">
+    <div class="ph-tag">INTER-HOSTEL COOPERATIVE LEAGUE</div>
+    <h1 class="ph-title">Power Pact: Sathyabama Roommate League</h1>
+    <p class="ph-subtitle">
+      Energy conservation is 10x more powerful when done together. Team up with your hostel wing roommates, pool your saved kilowatt-hours towards a shared semester goal, and vouch for each other's daily habits!
+    </p>
+  </div>
+
+  <!-- SQUAD ACTIONS BAR -->
+  <div class="pact-action-bar">
+    <div class="pab-left">
+      <span class="active-squad-badge">CURRENT SQUAD:</span>
+      <h2 class="active-squad-title">{{ active_team.name }}</h2>
+      <span class="join-code-pill">Join Code: <strong>{{ active_team.code }}</strong></span>
+    </div>
+    <div class="pab-right">
+      <button class="btn-primary-action" onclick="openJoinModal()">➕ Join with Code</button>
+      <button class="btn-secondary-action" onclick="openCreateModal()">🛡️ Create New Squad</button>
+    </div>
+  </div>
+
+  <div class="pact-main-grid">
+
+    <!-- LEFT COLUMN: SQUAD DASHBOARD & MEMBER ROSTER -->
+    <div class="pact-col-left">
+
+      <!-- CURRENT TEAM GOAL PROGRESS CARD -->
+      <div class="squad-progress-card">
+        <div class="spc-top">
+          <div>
+            <span class="spc-tag">SHARED SQUAD MILESTONE</span>
+            <h3 class="spc-name">{{ active_team.name }}</h3>
+            <p class="spc-motto">"{{ active_team.motto }}"</p>
+          </div>
+          <div class="spc-target-box">
+            <span class="spc-target-lbl">TARGET</span>
+            <span class="spc-target-val">{{ active_team.target_kwh }} kWh</span>
+          </div>
+        </div>
+
+        <div class="spc-meter-wrap">
+          <div class="spc-meter-labels">
+            <span>Progress Towards Goal</span>
+            <strong>{{ active_team.achieved_kwh }} / {{ active_team.target_kwh }} kWh ({{ (active_team.achieved_kwh / active_team.target_kwh * 100)|round|int }}%)</strong>
+          </div>
+          <div class="spc-meter-track">
+            <div class="spc-meter-bar" style="width: {{ (active_team.achieved_kwh / active_team.target_kwh * 100)|int }}%;"></div>
+          </div>
+        </div>
+
+        <div class="spc-perks-box">
+          <span class="perk-title">🎁 Unlocked Squad Rewards at 100%:</span>
+          <div class="perks-pills">
+            <span class="perk-pill">🏆 Sathyabama Eco-Shield Trophy</span>
+            <span class="perk-pill">⚡ Priority Hostel Wi-Fi Quota</span>
+            <span class="perk-pill">☕ Campus Café Refreshment Vouchers</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MEMBER ROSTER TABLE -->
+      <div class="squad-roster-card">
+        <h3 class="card-title">👥 Squad Members ({{ active_team.members|length }} Roommates)</h3>
+        <p class="card-sub">Individual contributions of verified kilowatt-hours and points.</p>
+
+        <div class="table-scroll-wrap">
+          <table class="roster-table">
+            <thead>
+              <tr>
+                <th>Member</th>
+                <th>Room</th>
+                <th>Points</th>
+                <th>Energy Saved</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for m in active_team.members %}
+              <tr>
+                <td><strong>{{ m.name }}</strong></td>
+                <td>Room {{ m.room }}</td>
+                <td class="pts-color">⭐ {{ m.pts }}</td>
+                <td class="kwh-color">⚡ {{ m.kwh }} kWh</td>
+                <td><span class="active-dot">● Active</span></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PEER CONFIRMATION ACTIVITY FEED -->
+      <div class="peer-feed-card">
+        <div class="card-header-row">
+          <div>
+            <h3 class="card-title">🤝 Peer Confirmation Activity Feed</h3>
+            <p class="card-sub">Roommates vouch for each other's check-ins to confirm actions and earn <strong>+5 bonus teamwork points</strong>!</p>
+          </div>
+        </div>
+
+        <div class="feed-items-list" id="feedList">
+          {% for item in active_team.feed %}
+          <div class="feed-item" id="item-{{ item.id }}">
+            <div class="fi-avatar">{{ item.user[0] }}</div>
+            <div class="fi-content">
+              <div class="fi-user-row">
+                <strong>{{ item.user }}</strong>
+                <span class="fi-time">{{ item.time }}</span>
+              </div>
+              <p class="fi-action">{{ item.action }}</p>
+              <div class="fi-vouch-row">
+                <button class="btn-vouch" onclick="vouchForFeed('{{ item.id }}')">
+                  👍 Vouch Check-in (<span id="count-{{ item.id }}">{{ item.vouches }}</span>)
+                </button>
+                <span class="vouch-bonus">+5 pts bonus</span>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN: SATHYABAMA CAMPUS LEADERBOARD -->
+    <div class="pact-col-right">
+
+      <div class="leaderboard-card">
+        <div class="card-header-row">
+          <div>
+            <h3 class="card-title">🏆 Campus Hostel Leaderboard</h3>
+            <p class="card-sub">Real-time ranking of Sathyabama hostel wings by total energy conserved.</p>
+          </div>
+        </div>
+
+        <div class="leaderboard-list">
+          {% for t in teams %}
+          <div class="lb-rank-card {% if loop.index == 1 %}rank-first{% elif loop.index == 2 %}rank-second{% elif loop.index == 3 %}rank-third{% endif %}">
+            <div class="lb-rank-badge">{{ loop.index }}</div>
+            <div class="lb-info">
+              <h4 class="lb-team-name">{{ t.name }}</h4>
+              <span class="lb-motto">"{{ t.motto }}"</span>
+              <div class="lb-members-count">👥 {{ t.members|length }} members &bull; Join: <code>{{ t.code }}</code></div>
+            </div>
+            <div class="lb-score">
+              <span class="lb-kwh">{{ t.achieved_kwh }} kWh</span>
+              <span class="lb-pct">{{ (t.achieved_kwh / t.target_kwh * 100)|round|int }}% of goal</span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- PEER VOUCHING EXPLANATION (FOR JUDGES) -->
+      <div class="vouch-explanation-card">
+        <h4>💡 Why Peer Confirmation Works:</h4>
+        <p>
+          Instead of expensive intrusive IoT hardware, NexWatt uses <strong>Social Trust Proofs</strong>. When a roommate checks off <em>"Turned off AC"</em>, their wing roommates must vouch for the check-in. It builds community culture while eliminating solitary cheating.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- JOIN TEAM MODAL -->
+  <div id="joinModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">🤝 Join a Hostel Squad</h3>
+        <button class="modal-close-btn" onclick="closeJoinModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Enter the 5-character join code provided by your hostel roommate or wing captain:</p>
+        <div class="form-group" style="margin-top:14px;">
+          <label class="form-label" for="joinCodeInput">Squad Join Code:</label>
+          <input type="text" id="joinCodeInput" class="form-input code-input" placeholder="e.g. KCB26" maxlength="8">
+          <span class="field-hint">Sample codes: <strong>NMA26</strong> (Block A), <strong>KCB26</strong> (Block B), <strong>VSC26</strong> (Block C).</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-game-secondary" onclick="closeJoinModal()">Cancel</button>
+        <button class="btn-game-primary" onclick="submitJoinTeam()">Join Squad 🚀</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREATE TEAM MODAL -->
+  <div id="createModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">🛡️ Create New Hostel Squad</h3>
+        <button class="modal-close-btn" onclick="closeCreateModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="newTeamName">Squad / Hostel Wing Name:</label>
+          <input type="text" id="newTeamName" class="form-input" placeholder="e.g. Block D - 3rd Floor Titans">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="newTeamMotto">Squad Motto / Battle Cry:</label>
+          <input type="text" id="newTeamMotto" class="form-input" placeholder="e.g. Cool Heads, Low Kilowatts">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="newTeamTarget">Monthly Energy Goal (kWh):</label>
+          <input type="number" id="newTeamTarget" class="form-input" value="200" min="50" max="2000">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-game-secondary" onclick="closeCreateModal()">Cancel</button>
+        <button class="btn-game-primary" onclick="submitCreateTeam()">Create Squad ✨</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function openJoinModal() { document.getElementById('joinModal').classList.remove('hidden'); }
+  function closeJoinModal() { document.getElementById('joinModal').classList.add('hidden'); }
+
+  function openCreateModal() { document.getElementById('createModal').classList.remove('hidden'); }
+  function closeCreateModal() { document.getElementById('createModal').classList.add('hidden'); }
+
+  async function submitJoinTeam() {
+    const code = document.getElementById('joinCodeInput').value.trim();
+    if (!code) return alert("Please enter a join code.");
+
+    try {
+      const res = await fetch('/api/pact/join', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast("Joined squad: " + data.team.name, "🎉");
+        setTimeout(() => window.location.reload(), 800);
+      } else {
+        alert(data.message);
+      }
+    } catch(e) {
+      alert("Failed to join team.");
+    }
+  }
+
+  async function submitCreateTeam() {
+    const name = document.getElementById('newTeamName').value.trim();
+    const motto = document.getElementById('newTeamMotto').value.trim();
+    const target = document.getElementById('newTeamTarget').value;
+
+    if (!name) return alert("Please enter a squad name.");
+
+    try {
+      const res = await fetch('/api/pact/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, motto, target_kwh: target })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast("Created squad: " + data.team.name, "🛡️");
+        setTimeout(() => window.location.reload(), 800);
+      } else {
+        alert(data.message);
+      }
+    } catch(e) {
+      alert("Failed to create team.");
+    }
+  }
+
+  async function vouchForFeed(feedId) {
+    try {
+      const res = await fetch('/api/pact/vouch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ feed_id: feedId })
+      });
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById(`count-${feedId}`).innerText = data.vouches;
+        showToast(data.message, "👍");
+      }
+    } catch(e) {
+      console.error(e);
+    }
+  }
+</script>
+{% endblock %}

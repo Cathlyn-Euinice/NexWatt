@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexWatt | Dexathon 2026 Official Slide Deck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #111827;
+      --card-border: rgba(255, 255, 255, 0.08);
+      --emerald: #10b981;
+      --solar: #f59e0b;
+      --cyan: #06b6d4;
+      --danger: #ef4444;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .deck-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 24px;
+      background: rgba(17, 24, 39, 0.95);
+      border-bottom: 1px solid var(--card-border);
+      font-size: 0.82rem;
+    }
+    .badge {
+      background: var(--emerald);
+      color: #06281e;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+    }
+    .deck-container {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .slide {
+      display: none;
+      width: 100%;
+      max-width: 1100px;
+      height: 85vh;
+      max-height: 640px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 40px 48px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      flex-direction: column;
+      justify-content: space-between;
+      animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow-y: auto;
+    }
+    .slide.active { display: flex; }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .slide-tag {
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 6px;
+    }
+    .slide-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .info-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .info-box h3 {
+      font-size: 1.05rem;
+      color: var(--emerald);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .info-box ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .info-box li {
+      position: relative;
+      padding-left: 18px;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+    .info-box li::before {
+      content: "•";
+      position: absolute;
+      left: 4px;
+      color: var(--emerald);
+      font-weight: bold;
+    }
+    .info-box strong { color: #fff; }
+    .hero-slide {
+      text-align: center;
+      justify-content: center;
+      gap: 20px;
+    }
+    .hero-title {
+      font-size: 3.8rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, #10b981 30%, #38bdf8 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-subtitle {
+      font-size: 1.3rem;
+      color: var(--text-muted);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .hero-meta {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .meta-chip {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+    }
+    .stat-card {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 16px;
+      border-radius: 12px;
+      text-align: center;
+    }
+    .stat-num {
+      font-size: 1.8rem;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--emerald);
+    }
+    .stat-lbl {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .deck-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 32px;
+      background: rgba(17, 24, 39, 0.95);
+      border-top: 1px solid var(--card-border);
+    }
+    .controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .ctrl-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .ctrl-btn:hover {
+      background: var(--emerald);
+      color: #06281e;
+    }
+    .slide-counter {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+    .speaker-note-box {
+      background: rgba(245, 158, 11, 0.1);
+      border-left: 3px solid var(--solar);
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      color: #fde68a;
+      margin-top: 10px;
+    }
+    .speaker-note-box strong { color: var(--solar); }
+  </style>
+</head>
+<body>
+
+  <header class="deck-header">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span class="badge">DEXATHON 2026</span>
+      <strong>Sathyabama Institute of Science and Technology</strong>
+    </div>
+    <div style="color:var(--text-muted);">
+      Team: <strong>The Logic Lords</strong> &bull; Theme: <strong>Open Innovation (NexWatt)</strong>
+    </div>
+    <div>
+      <a href="/" style="color:var(--emerald); text-decoration:none; font-weight:700;">🚀 Open Live App Demo</a>
+    </div>
+  </header>
+
+  <main class="deck-container">
+
+    <!-- SLIDE 1: TITLE PAGE -->
+    <div class="slide active hero-slide">
+      <div>
+        <div class="slide-tag">DEXATHON 2026 &bull; OPEN INNOVATION SOFTWARE TRACK</div>
+        <h1 class="hero-title">NexWatt</h1>
+        <p class="hero-subtitle">Intelligent Demand-Side Energy Management & Campus Conservation Platform</p>
+      </div>
+
+      <div class="hero-meta">
+        <div class="meta-chip">👥 Team: <strong>The Logic Lords</strong></div>
+        <div class="meta-chip">🏆 PS Category: <strong>Software + IoT Hardware</strong></div>
+        <div class="meta-chip">🏛️ Sathyabama University</div>
+        <div class="meta-chip">🇮🇳 Aligned with <strong>BEE India &bull; Mission LiFE</strong></div>
+      </div>
+
+      <div class="speaker-note-box">
+        <strong>🎤 Speaker Script:</strong> "Respected judges, we are Team The Logic Lords. Today, we present NexWatt — an intelligent energy management platform that transforms passive electricity conservation into a verified, competitive, and measurable campus movement."
+      </div>
+    </div>
+
+    <!-- SLIDE 2: PROBLEM & SOLUTION -->
+    <div class="slide">
+      <div>
+        <div class="slide-tag">SLIDE 02 &bull; PROBLEM & PROPOSED SOLUTION</div>
+        <h2 class="slide-title">Unnoticed Campus Power Leaks & The Verification Gap</h2>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2">
+          <div class="info-box">
+            <h3 style="color:var(--danger);">⚠️ The Problem</h3>
+            <ul>
+              <li><strong>Invisible Wastage:</strong> Students leave ACs at 18°C, ceiling fans on full speed, and empty adapters plugged in without knowing the cost.</li>
+              <li><strong>Campus Scale Loss:</strong> Across 2,000+ Sathyabama hostel rooms, standby leakage costs <strong>₹25 Lakhs per year</strong>.</li>
+              <li><strong>The Cheating Problem:</strong> Standard green apps rely on passive checklists where students can lie to gain points.</li>
+            </ul>
+          </div>
+
+          <div class="info-box">
+            <h3>⚡ The NexWatt Solution</h3>
+            <ul>
+              <li><strong>Dual-Perspective Architecture:</strong> Combines student biophilic gamification with campus micro-grid peak shaving.</li>
+              <li><strong>NexWatt Mystery Room:</strong> Interactive 2.5D schematic to diagnose and stop phantom loads.</li>
+              <li><strong>Energy Impact Garden:</strong> Dynamic living terrarium that physically grows across 5 stages based on real kWh saved.</li>
+              <li><strong>Physical IoT Cross-Validation:</strong> Real-time hardware telemetry catches fake habit claims instantly.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="grid-3" style="margin-top:10px;">
+          <div class="stat-card">
+            <div class="stat-num">₹25.3 L</div>
+            <div class="stat-lbl">Annual Campus Waste Prevented</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">115.4 kW</div>
+            <div class="stat-lbl">Peak Grid Demand Shaved</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">&plusmn;1%</div>
+            <div class="stat-lbl">Hardware Measurement Precision</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="speaker-note-box">
+        <strong>🎤 Speaker Script:</strong> "NexWatt solves both sides: for students, it turns power conservation into a thrilling game with an evolving living garden; for university administrators, it eliminates cheating with physical IoT sensors and saves ₹25 Lakhs annually."
+      </div>
+    </div>
+
+    <!-- SLIDE 3: TECHNICAL APPROACH -->
+    <div class="slide">
+      <div>
+        <div class="slide-tag">SLIDE 03 &bull; TECHNICAL APPROACH & ARCHITECTURE</div>
+        <h2 class="slide-title">Full-Stack Architecture & IoT Verification Engine</h2>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-3">
+          <div class="info-box">
+            <h3>💻 Frontend Layer</h3>
+            <ul>
+              <li>Semantic HTML5 & Modern Glassmorphic CSS3 theme.</li>
+              <li>Zero-framework Vanilla ES6+ JavaScript for instant sub-50ms render.</li>
+              <li><strong>Chart.js:</strong> Real-time 24-hr micro-grid demand curve & live 5-min IoT timeline.</li>
+              <li><strong>Botanical SVG Engine:</strong> Real-time procedural growth stages.</li>
+            </ul>
+          </div>
+
+          <div class="info-box">
+            <h3>⚙️ Python Backend</h3>
+            <ul>
+              <li>Python 3 REST API microservice with zero third-party dependencies.</li>
+              <li><strong>Tariff Simulation Engine:</strong> TNEB slab & institutional calculations.</li>
+              <li><strong>Power Signature Matching:</strong> Heuristics for AC, fans, chargers, and geysers.</li>
+              <li><strong>NAAC Audit Generator:</strong> One-click text/PDF audit slip export.</li>
+            </ul>
+          </div>
+
+          <div class="info-box">
+            <h3>📡 IoT Hardware Node</h3>
+            <ul>
+              <li><strong>Sensor:</strong> PZEM-004T v3.0 (measures Voltage, Current, Active Power W, Energy kWh, PF).</li>
+              <li><strong>MCU:</strong> ESP32 DevKit v1 with Wi-Fi HTTP POST every 2s.</li>
+              <li><strong>Ring Buffer:</strong> 60-packet offline memory prevents data loss during Wi-Fi disconnects.</li>
+              <li><strong>Cost:</strong> Under ₹1,200 for full single-room node.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="info-box" style="background:rgba(6,182,212,0.06); border-color:rgba(6,182,212,0.3);">
+          <h3 style="color:var(--cyan);">🔄 System Workflow: From Sensor to Verified Impact</h3>
+          <p style="font-size:0.85rem; color:var(--text-muted);">
+            <strong>PZEM 230V AC Sensor</strong> ──UART──► <strong>ESP32 MCU</strong> ──Wi-Fi POST──► <strong>NexWatt Python Engine</strong> ──Signature Check──► <strong>Verified Garden XP & Campus Peak Shaving</strong>
+          </p>
+        </div>
+      </div>
+
+      <div class="speaker-note-box">
+        <strong>🎤 Speaker Script:</strong> "Our architecture combines a zero-dependency Python backend with a ₹800 PZEM sensor and ESP32. When a student checks 'AC off', our signature matching engine verifies that the 800W compressor draw truly vanished from the live feed."
+      </div>
+    </div>
+
+    <!-- SLIDE 4: FEASIBILITY & MITIGATION -->
+    <div class="slide">
+      <div>
+        <div class="slide-tag">SLIDE 04 &bull; FEASIBILITY & VIABILITY</div>
+        <h2 class="slide-title">Cost-Effective Feasibility & Challenge Mitigation</h2>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2">
+          <div class="info-box">
+            <h3>✅ Feasibility Highlights</h3>
+            <ul>
+              <li><strong>Extremely Low Prototyping Cost:</strong> Full physical setup under <strong>₹1,200</strong>.</li>
+              <li><strong>Zero Cloud Subscriptions:</strong> Operates locally or on standard campus intranet servers.</li>
+              <li><strong>Non-Invasive Deployment:</strong> Installs inline with existing extension boards or distribution boards without building rewiring.</li>
+              <li><strong>Instant Scalability:</strong> Python REST endpoints can ingest telemetry from 500+ rooms concurrently.</li>
+            </ul>
+          </div>
+
+          <div class="info-box">
+            <h3>🛡️ Mitigation of Critical Risks</h3>
+            <ul>
+              <li><strong>Risk: "Students will lie on the checklist."</strong><br>
+                <em>Fix:</em> Inline PZEM-004T sensor compares live power against appliance signatures; flags discrepancies as <strong>⚠️ UNVERIFIED</strong>.
+              </li>
+              <li><strong>Risk: "App abandonment after 3 days."</strong><br>
+                <em>Fix:</em> Living Garden virtual pet mechanics + Power Pact inter-hostel pride + campus Wi-Fi perks.
+              </li>
+              <li><strong>Risk: "Doubtful calculation formulas."</strong><br>
+                <em>Fix:</em> Formally grounded in <strong>BEE standards</strong> and <strong>CEA India emission factor (0.82 kg CO₂/kWh)</strong>.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="speaker-note-box">
+        <strong>🎤 Speaker Script:</strong> "We tackled the toughest judge questions upfront. By pairing physical sensor verification with inter-hostel peer dynamics, we eliminate both cheating and user drop-off, all for under ₹1,200 per room."
+      </div>
+    </div>
+
+    <!-- SLIDE 5: BUSINESS CANVAS -->
+    <div class="slide">
+      <div>
+        <div class="slide-tag">SLIDE 05 &bull; BUSINESS CANVAS & ECONOMIC MODEL</div>
+        <h2 class="slide-title">Institutional B2B SaaS & Campus ROI</h2>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2">
+          <div class="info-box">
+            <h3>🎯 Market & Target Audience</h3>
+            <ul>
+              <li><strong>Primary:</strong> Engineering colleges, universities, and student hostels (starting with Sathyabama).</li>
+              <li><strong>Secondary:</strong> Corporate tech parks and gated residential communities.</li>
+              <li><strong>Market Driver:</strong> Soaring institutional electricity tariffs and mandatory <strong>NAAC / NIRF Green Campus rankings</strong>.</li>
+            </ul>
+          </div>
+
+          <div class="info-box">
+            <h3>💼 Revenue & Monetization Streams</h3>
+            <ul>
+              <li><strong>B2B Institutional SaaS:</strong> Annual campus subscription for micro-grid peak load management and automated ESG reporting.</li>
+              <li><strong>Hardware Turnkey Kits:</strong> Pre-flashed ESP32 + PZEM energy sub-metering packages.</li>
+              <li><strong>BEE 5-Star Affiliate Marketplace:</strong> Commission on student/hostel retrofits (BLDC fans, inverter ACs).</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="stat-card" style="text-align:left; padding:16px 24px;">
+          <h4 style="color:var(--emerald); margin-bottom:4px;">💰 Sathyabama Campus Financial ROI:</h4>
+          <p style="font-size:0.85rem; color:var(--text-muted);">
+            Instrumenting 500 rooms costs <strong>~₹4 Lakhs</strong> one-time. With projected annual power savings of <strong>₹25.3 Lakhs</strong>, the institution achieves full payback in <strong>under 2 months</strong> with a <strong>>500% Year-1 ROI</strong>.
+          </p>
+        </div>
+      </div>
+
+      <div class="speaker-note-box">
+        <strong>🎤 Speaker Script:</strong> "Our business model is B2B institutional SaaS. For Sathyabama, an upfront investment of ₹4 Lakhs saves ₹25.3 Lakhs annually—giving the college a complete return on investment in under two months."
+      </div>
+    </div>
+
+    <!-- SLIDE 6: IMPACT AND BENEFITS -->
+    <div class="slide">
+      <div>
+        <div class="slide-tag">SLIDE 06 &bull; IMPACT AND BENEFITS</div>
+        <h2 class="slide-title">Triple-Bottom-Line: Economic, Environmental & Social</h2>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-3">
+          <div class="info-box">
+            <h3>💰 Economic Impact</h3>
+            <ul>
+              <li><strong>₹25.3 Lakhs/Year</strong> in direct campus utility bill reduction.</li>
+              <li><strong>115.4 kW Peak Demand Shaved</strong>, lowering peak penalty surcharges from electricity boards.</li>
+              <li>Students learn practical financial mindfulness regarding appliance power costs.</li>
+            </ul>
+          </div>
+
+          <div class="info-box">
+            <h3>🌍 Environmental Impact</h3>
+            <ul>
+              <li><strong>23.06 Tonnes</strong> of CO₂ emissions eliminated annually.</li>
+              <li><strong>1,059 Trees Equivalent</strong> in atmospheric carbon sequestration capacity created.</li>
+              <li><strong>340,000 Litres</strong> of powerplant cooling water conserved at source.</li>
+            </ul>
+          </div>
+
+          <div class="info-box">
+            <h3>🎓 Social & Academic</h3>
+            <ul>
+              <li>Inter-hostel leagues build positive environmental community spirit.</li>
+              <li>Automated digital evidence generation for <strong>NAAC Criterion 7.1.2</strong> (Green Campus Audits).</li>
+              <li>Directly fulfills national targets under <strong>Mission LiFE</strong>.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="speaker-note-box">
+        <strong>🎤 Speaker Script:</strong> "NexWatt delivers triple-bottom-line impact: financially saving ₹25 Lakhs, environmentally eliminating 23 tonnes of carbon emissions, and academically granting Sathyabama audit-ready evidence for NAAC Grade A+ green accreditation."
+      </div>
+    </div>
+
+    <!-- SLIDE 7: RESEARCH & REFERENCES -->
+    <div class="slide">
+      <div>
+        <div class="slide-tag">SLIDE 07 &bull; RESEARCH WORK & REGULATORY GROUNDING</div>
+        <h2 class="slide-title">Scientific Grounding & Official Standards</h2>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2">
+          <div class="info-box">
+            <h3>📚 Regulatory Standards Used</h3>
+            <ul>
+              <li><strong>Central Electricity Authority (CEA), India:</strong> Grid emission factor of <strong>0.82 kg CO₂/kWh</strong> (<em>CO₂ Baseline Database for the Indian Power Sector, Ver. 19</em>).</li>
+              <li><strong>Bureau of Energy Efficiency (BEE):</strong> 24°C thermal comfort baseline & BLDC 28W fan standards.</li>
+              <li><strong>Mission LiFE (Lifestyle for Environment):</strong> Ministry of Environment, Forest & Climate Change (MoEFCC).</li>
+              <li><strong>Forestry Benchmark:</strong> 21.77 kg CO₂/year average sequestration per mature tree.</li>
+            </ul>
+          </div>
+
+          <div class="info-box">
+            <h3>🔗 Project Links & Verification</h3>
+            <ul>
+              <li><strong>GitHub Repository:</strong><br><a href="https://github.com/Cathlyn-Euinice/NexWatt" style="color:var(--cyan); word-break:break-all;">https://github.com/Cathlyn-Euinice/NexWatt</a></li>
+              <li><strong>Live Prototype:</strong> <a href="http://localhost:5050" style="color:var(--emerald);">http://localhost:5050</a></li>
+              <li><strong>Hardware Node:</strong> ESP32 DevKit v1 + PZEM-004T v3.0</li>
+              <li><strong>Team:</strong> The Logic Lords (Dexathon 2026)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="stat-card" style="margin-top:10px; background:rgba(245,158,11,0.08); border-color:rgba(245,158,11,0.3);">
+          <h4 style="color:var(--solar); margin-bottom:4px;">🎯 Ready for Live Judge Demo:</h4>
+          <p style="font-size:0.85rem; color:var(--text-muted);">
+            We have a 100% working live demo running right now with live habit logging, interactive mystery room, virtual botanical garden, tariff calculator, and live IoT hardware telemetry!
+          </p>
+        </div>
+      </div>
+
+      <div class="speaker-note-box">
+        <strong>🎤 Speaker Script:</strong> "All our formulas are grounded in official Indian regulatory data from BEE, CEA, and Mission LiFE. We invite the judges to test our live prototype right now. Thank you, and we welcome your questions!"
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="deck-footer">
+    <div class="controls">
+      <button class="ctrl-btn" onclick="prevSlide()">◀ Previous</button>
+      <button class="ctrl-btn" onclick="nextSlide()">Next ▶</button>
+      <button class="ctrl-btn" onclick="toggleNotes()">🎤 Toggle Speaker Notes</button>
+    </div>
+    <div class="slide-counter" id="slideNum">Slide 1 of 7</div>
+    <div style="font-size:0.8rem; color:var(--text-muted);">
+      Use <strong>←</strong> / <strong>→</strong> arrow keys to navigate
+    </div>
+  </footer>
+
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+
+    function showSlide(index) {
+      slides.forEach(s => s.classList.remove('active'));
+      currentSlide = (index + totalSlides) % totalSlides;
+      slides[currentSlide].classList.add('active');
+      document.getElementById('slideNum').innerText = `Slide ${currentSlide + 1} of ${totalSlides}`;
+    }
+
+    function nextSlide() { showSlide(currentSlide + 1); }
+    function prevSlide() { showSlide(currentSlide - 1); }
+
+    function toggleNotes() {
+      const notes = document.querySelectorAll('.speaker-note-box');
+      notes.forEach(n => {
+        n.style.display = (n.style.display === 'none') ? 'block' : 'none';
+      });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+      else if (e.key === 'ArrowLeft') prevSlide();
+      else if (e.key.toLowerCase() === 'n') toggleNotes();
+    });
+  </script>
+</body>
+</html>
